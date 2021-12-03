@@ -125,3 +125,39 @@ app.listen(APP_PORT, () => {
 
 
 
+## 四、添加路由
+
+路由：根据不同的URL，调用对应处理函数
+
+### 1、安装koa-router
+
+```shell
+npm install koa-router
+```
+
+步骤：
+
+- 导入包
+- 实例化对象
+- 编写路由
+- 注册中间件
+
+### 2、编写路由
+
+创建`src/router`目录，编写`user.route.js`
+
+```js
+# src/router/user.route.js
+
+const Router = require('koa-router');
+
+const router = new Router({ prefix: '/users' })
+
+// GET /users/
+router.get('/', (ctx, next) => {
+    ctx.body = 'hello users';
+})
+
+module.exports = router
+```
+
