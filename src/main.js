@@ -1,3 +1,8 @@
+/**
+ * @description: 入口文件
+ * @author: Emma
+ */
+
 const { APP_PORT } = require('./config/config.default');
 
 const app = require('./app');
