@@ -1,3 +1,8 @@
+/**
+ * @description: 路由——解析url，分布给控制器的方法
+ * @author: Emma
+ */
+
 const Router = require('koa-router');
 
 const { register, login } = require('../controller/user.controller')
