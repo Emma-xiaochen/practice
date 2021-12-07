@@ -1,3 +1,8 @@
+/**
+ * @description: 通过sequelize连接数据库
+ * @author: Emma
+ */
+
 const { Sequelize } = require('sequelize');
 
 const {
