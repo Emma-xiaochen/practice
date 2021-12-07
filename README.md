@@ -341,3 +341,71 @@ class userService {
 }
 ```
 
+
+
+## 七、数据库操作
+
+sequelize ORM数据库工具
+
+ORM：对象关系映射
+
+- 数据表映射（对应）一个类
+- 数据表中的数据行（记录）对应一个对象
+- 数据表字段对应对象的属性
+- 数据表的操作对应对象的方法
+
+### 1、安装sequelize
+
+```shell
+npm install mysql2 sequelize
+```
+
+### 2、编写配置文件
+
+```
+#.env
+
+APP_PORT = 8000
+
+MYSQL_HOST = localhost
+MYSQL_PORT = 3306
+MYSQL_USER = root
+MYSQL_PWD = 123456
+MYSQL_DB = zdsc
+```
+
+### 3、连接数据库
+
+`src/db/seq.js`
+
+```js
+# src/db/seq.js
+
+const { Sequelize } = require('sequelize')
+
+const {
+  MYSQL_HOST,
+  MYSQL_PORT,
+  MYSQL_USER,
+  MYSQL_PWD,
+  MYSQL_DB,
+} = require('../config/config.default')
+
+const seq = new Sequelize(MYSQL_DB, MYSQL_USER, MYSQL_PWD, {
+  host: MYSQL_HOST,
+  dialect: 'mysql',
+})
+
+seq
+  .authenticate()
+  .then(() => {
+    console.log('数据库连接成功')
+  })
+  .catch((err) => {
+    console.log('数据库连接失败', err)
+  })
+
+module.exports = seq
+```
+
+### 
