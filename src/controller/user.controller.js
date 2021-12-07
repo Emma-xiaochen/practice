@@ -1,3 +1,8 @@
+/**
+ * @description: 控制器——处理不同的业务
+ * @author: Emma
+ */
+
 const { createUser } = require('../service/user.service')
 
 class UserController {
