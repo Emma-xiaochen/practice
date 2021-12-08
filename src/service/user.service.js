@@ -3,7 +3,7 @@
  * @author: Emma
  */
 
-const User = require('../model/user.model')
+const User = require('../model/use.model')
 
 class UserService {
   async createUser(user_name, password) {
