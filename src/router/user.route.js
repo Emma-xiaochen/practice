@@ -1,5 +1,5 @@
 /**
- * @description: 路由——解析url，分布给控制器的方法
+ * @description: router层——建立一个映射关系，将不同的url转发给控制器不同的方法
  * @author: Emma
  */
 
