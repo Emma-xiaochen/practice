@@ -416,10 +416,10 @@ module.exports = seq
 
 sequelize 主要通过 Model 对应数据表
 
-创建`src/model/user.model.js`
+创建`src/model/use.model.js`
 
 ```js
-# src/model/user.model.js
+# src/model/use.model.js
 
 const { DataTypes } = require('sequelize');
 
