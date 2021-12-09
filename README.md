@@ -612,3 +612,106 @@ class UserService {
 module.exports = new UserService()
 ```
 
+
+
+## 十一、拆分中间件
+
+为了使代码的逻辑更加清晰，我们可以拆分一个中间件层，封装多个中间件函数
+
+![img](https://camo.githubusercontent.com/c9c69e7a6c7a03c0a8b04971148c33c3363ec421f9cacbbcaef0c1cf3e0a221a/687474703a2f2f696d6167652e62726f6a69652e636e2f696d6167652d32303231303532343135343335333532302e706e67)
+
+### 1、拆分中间件
+
+添加`src/middleware/user.middleware`
+
+```js
+# src/middleware/user.middleware
+
+const { getUserInfo } = require('../service/user.service');
+const { userFormateError, userAlreadyExited } = require('../constant/err.type');
+
+const userValidator = async (ctx, next) => {
+      const { user_name, password } = ctx.request.body;
+      // 合法性
+      if (!user_name || !password) {
+		console.error('用户名或密码为空', ctx.request.body);
+    	ctx.app.emit('error', userFormateError, ctx);
+    	return;
+      }
+
+      await next();
+}
+
+const verifyUser = async (ctx, next) => {
+	const { user_name } = ctx.request.body;
+
+	if (getUerInfo({ user_name })) {
+		ctx.app.emit('error', userAlreadyExited, ctx);
+		return;
+  }
+
+	await next();
+}
+
+module.exports = {
+  userValidator,
+  verifyUser,
+}
+```
+
+### 2、统一错误处理
+
+- 在出错的地方使用`ctx.app.emit`提交错误
+- 在 app 中通过`app.on`监听
+
+编写统一的错误定义文件
+
+```js
+# src/consitant/err.type.js
+
+module.exports = {
+  userFormateError: {
+    code: '10001',
+    message: '用户名或密码为空',
+    result: '',
+  },
+  userAlreadyExited: {
+    code: '10002',
+    message: '用户已经存在',
+    result: '',
+  },
+}
+```
+
+### 3、错误处理函数
+
+```js
+# src/app/errHandler.js
+
+module.exports = (err, ctx) => {
+  let status = 500;
+  switch (err.code) {
+    case '10001':
+      status = 400;
+      break;
+    case '10002':
+      status = 409;
+      break;
+    default:
+      status = 500;
+  }
+  ctx.status = status;
+  ctx.body = err;
+}
+```
+
+改写`app/index.js`
+
+```js
+# # src/app/index.js
+
+const errHandler = require('./errHandler');
+// 统一的错误处理
+app.on('error', errHandler);
+```
+
