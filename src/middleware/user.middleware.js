@@ -4,7 +4,7 @@
  */
 
 const { getUserInfo } = require('../service/user.service');
-const { userFormateError, userAlreadyExited } = require('../consitant/err.type');
+const { userFormateError, userAlreadyExited } = require('../constant/err.type');
 
 // 用户验证器
 const userValidator = async (ctx, next) => {
