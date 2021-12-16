@@ -11,7 +11,6 @@ class UserService {
     // async表达式： promise对象的值
     const res = await User.create({ user_name, password });
     // console.log(res);
-
     return res.dataValues;
   }
 
