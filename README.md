@@ -667,7 +667,7 @@ module.exports = {
 编写统一的错误定义文件
 
 ```js
-# src/consitant/err.type.js
+# src/constant/err.type.js
 
 module.exports = {
   userFormateError: {
