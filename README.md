@@ -715,3 +715,9 @@ const errHandler = require('./errHandler');
 app.on('error', errHandler);
 ```
 
+
+
+## 十二、加密
+
+在将密码保存到数据库之前，要对密码进行加密处理
+
