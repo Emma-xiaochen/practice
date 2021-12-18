@@ -721,3 +721,61 @@ app.on('error', errHandler);
 
 在将密码保存到数据库之前，要对密码进行加密处理
 
+123123abc（加盐）加盐加密
+
+### 1、安装 bcryptjs
+
+```shell
+npm install bcryptjs
+```
+
+### 2、编写加密中间件
+
+```js
+# middleware/user.middleware.js
+
+const bcrypt = require('bcryptjs');
+
+const cryptPassword = async(ctx, next) => {
+	const { password } = ctx.request.body;
+	
+	const salt = bcrypt.genSaltSync(10);
+	// hash保存的是 密文
+	const hash = bcrypt.hashSync(passowrd, salt);
+	
+	ctx.request.body.password = hash;
+	
+	await next();
+}
+```
+
+### 3、在router中使用
+
+改写user.router.js
+
+```js
+# src/router/user.router.js
+
+const Router = require('koa-router');
+
+const {
+	userValidator,
+	verifyUser,
+	cryptPassword
+} = require('../middleware/user.middleware');
+
+const { register, login } = require('../controller/user.controller');
+
+const router = new Router({ prefix: '/users' });
+
+// 注册接口
+router.post('/register', userValidator, verifyUser, cryptPassword, register);
+
+// 登录接口
+router.post('/login', login);
+
+module.exports = router
+```
+
+
+
