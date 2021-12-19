@@ -42,11 +42,11 @@ const Koa = require('koa');
 const app = new Koa();
 
 app.use((ctx, next) => {
-  ctx.body = 'hello world!';
+	ctx.body = 'hello world!';
 })
 
 app.listen(3000, () => {
-  console.log('server is running on http://localhost:3000');
+	console.log('server is running on http://localhost:3000');
 });
 ```
 
@@ -305,20 +305,20 @@ app.use(KoaBody());
 const { createUser } = require('../service/user.service')
 
 class UserController {
-  async register(ctx, next) {
-    // 1. 获取数据
-    // console.log(ctx.request.body);
-    const { user_name, password } = ctx.request.body;
-    // 2. 操作数据库
-    const res = await createUser(user_name, password);
-    console.log(res);
-    // 3. 返回结果
-    ctx.body = ctx.request.body;
-  }
+	async register(ctx, next) {
+		// 1. 获取数据
+    	// console.log(ctx.request.body);
+        const { user_name, password } = ctx.request.body;
+    	// 2. 操作数据库
+    	const res = await createUser(user_name, password);
+   	 	console.log(res);
+    	// 3. 返回结果
+    	ctx.body = ctx.request.body;
+  	}
 
-  async login(ctx, next) {
-    ctx.body = '登录成功';
-  }
+  	async login(ctx, next) {
+    	ctx.body = '登录成功';
+  	}
 }
 
 module.exports = new UserController();
@@ -384,28 +384,25 @@ MYSQL_DB = zdsc
 const { Sequelize } = require('sequelize')
 
 const {
-  MYSQL_HOST,
-  MYSQL_PORT,
-  MYSQL_USER,
-  MYSQL_PWD,
-  MYSQL_DB,
+	MYSQL_HOST,
+  	MYSQL_PORT,
+  	MYSQL_USER,
+  	MYSQL_PWD,
+  	MYSQL_DB,
 } = require('../config/config.default')
 
 const seq = new Sequelize(MYSQL_DB, MYSQL_USER, MYSQL_PWD, {
-  host: MYSQL_HOST,
-  dialect: 'mysql',
+  	host: MYSQL_HOST,
+    dialect: 'mysql',
 })
 
-seq
-  .authenticate()
-  .then(() => {
-    console.log('数据库连接成功')
-  })
-  .catch((err) => {
-    console.log('数据库连接失败', err)
-  })
+seq.authenticate().then(() => {
+	console.log('数据库连接成功')
+}).catch((err) => {
+	console.log('数据库连接失败', err)
+})
 
-module.exports = seq
+module.exports = seq;
 ```
 
 
@@ -670,16 +667,16 @@ module.exports = {
 # src/constant/err.type.js
 
 module.exports = {
-  userFormateError: {
-    code: '10001',
-    message: '用户名或密码为空',
-    result: '',
-  },
-  userAlreadyExited: {
-    code: '10002',
-    message: '用户已经存在',
-    result: '',
-  },
+	userFormateError: {
+    	code: '10001',
+    	message: '用户名或密码为空',
+        result: '',
+  	},
+  	userAlreadyExited: {
+    	code: '10002',
+    	message: '用户已经存在',
+    	result: '',
+  	},
 }
 ```
 
@@ -689,26 +686,26 @@ module.exports = {
 # src/app/errHandler.js
 
 module.exports = (err, ctx) => {
-  let status = 500;
-  switch (err.code) {
-    case '10001':
-      status = 400;
-      break;
-    case '10002':
-      status = 409;
-      break;
-    default:
-      status = 500;
-  }
-  ctx.status = status;
-  ctx.body = err;
+	let status = 500;
+    switch (err.code) {
+    	case '10001':
+      		status = 400;
+      		break;
+    	case '10002':
+            status = 409;
+      		break;
+    	default:
+      		status = 500;
+  	}
+  	ctx.status = status;
+  	ctx.body = err;
 }
 ```
 
 改写`app/index.js`
 
 ```js
-# # src/app/index.js
+# src/app/index.js
 
 const errHandler = require('./errHandler');
 // 统一的错误处理
