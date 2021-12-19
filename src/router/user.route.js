@@ -8,7 +8,8 @@ const Router = require('koa-router');
 const {
   userValidator,
   verifyUser,
-  cryptPassword
+  cryptPassword,
+  verifyLogin
 } = require('../middleware/user.middleware');
 const { register, login } = require('../controller/user.controller');
 
@@ -18,6 +19,6 @@ const router = new Router({ prefix: '/users' });
 router.post('/register', userValidator, verifyUser, cryptPassword, register);
 
 // 登录接口
-router.post('/login', login);
+router.post('/login', userValidator, verifyLogin, login);
 
 module.exports = router;
