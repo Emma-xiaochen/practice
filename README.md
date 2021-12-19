@@ -935,3 +935,60 @@ module.exports = {
 router.post('/login', userValidator, verifyLogin, login)
 ```
 
+
+
+## 十四、用户的认证
+
+登陆成功后，给用户办法一个令牌token，用户在以后的每一次请求中携带这个令牌。
+
+jwt：json web token
+
+- header：头部
+- payload：载荷
+- signature：签名
+
+### 1、颁发 token
+
+#### 1) 安装 jsonwebtoken
+
+```shell
+npm install jsonwebtoken	
+```
+
+#### 2) 在控制器中改写login方法
+
+```js
+# src/controller/user.controller.js
+
+const { createUser, getUserInfo } = require('../service/user.service');
+
+
+async login(ctx, next) {
+	const { user_name } = ctx.request.body;
+	
+	// 1. 获取用户信息(在token的payload中，记录id, user_name, is_admin)
+	try {
+		// 从返回结果对象中提出password属性，将剩下的属性放到res对象
+		const { password, ...res } = await getUserInfo({ user_name });
+		
+		ctx.body = {
+			code: 0,
+			message: '用户登录成功',
+			result: {
+				token: jwt.sign(res, JWT_SECRET, { expiresIn: '1d' })
+			}
+		}
+	} catch(err) {
+		console.error('用户登录失败', err);
+	}
+}
+```
+
+#### 3) 定义私钥
+
+```js
+# .env
+
+JWT_SECRET = xzd;
+```
+
