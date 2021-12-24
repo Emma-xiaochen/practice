@@ -1036,7 +1036,122 @@ module.exports = {
 // 修改密码接口
 rouer.patch('/', auth, (ctx,next) => {
 	console.log(ctx.state.user);
-	ctx.body = '修改密码成功';
+	ctx.body = '修改密码成功'
 })
 ```
+
+
+
+## 十五、修改密码
+
+### 1、拆分中间件
+
+#### 1) 定义changePassword中间件
+
+#### 2) 调用service层里updateById
+
+```js
+# src/controller/user.controller.js
+
+const { createUser, getUserInfo, updateById } = require('../service/user.service');
+
+class UserController {
+	async changePassword(ctx, next) {
+		// 1. 获取数据
+ 		const id = ctx.state.user.id;
+ 		const password= ctx.request.body.password;
+ 		// 2. 操作数据库
+        if(await updateById({ id, password })) {
+            ctx.body = {
+                code: 0,
+                message: '修改密码成功',
+                result: ''
+            }
+        } else {
+            ctx.body = {
+                code: '10007',
+                message: '修改密码失败',
+                result: ''
+            }
+        }
+ 		// 3. 返回结果
+	}
+}
+
+module.exports = {
+    UserController
+}
+```
+
+### 2、定义统一更新的方法
+
+- 封装updateById方法。用来根据id改写对象里的任意字段的值
+
+  ```js
+  # src/service/user.service.js
+  
+  class UserService {
+      async updateById({ id, user_name, password, is_admin }) {
+          const whereOpt = { id };
+          const newUser = {};
+          
+          username && Object.assign(newUser, { user_name });
+          password && Object.assign(newUser, { password });
+          is_admin && Object.assign(newUser, { is_admin });
+          
+          const res = await User.update(newUser, { where: whereOpt });
+          
+          // console.log(res);
+          
+          return res[0] > 0 ? true : false;
+      }
+  }
+  
+  module.exports = new UserService();
+  ```
+
+### 3、改写router
+
+```js
+# src/router/user.route.js
+
+const {
+  userValidator,
+  verifyUser,
+  cryptPassword,
+  verifyLogin
+} = require('../middleware/user.middleware');
+
+const { auth } = require('../middleware/auth.middleware');
+
+const { resgister, login, changePassword } = require('../controller/user.controller');
+
+// 修改密码接口
+router.patch('/', auth, cryptPassword, changePassword);
+```
+
+### 4、打印所有报错
+
+```js
+# src/errHandle.js
+
+module.exports = (err, ctx) => {
+	let status = 500;
+	switch (err.code) {
+        case '10001':
+      		status = 400;
+      		break;
+    	case '10002':
+      		status = 409;
+      		break;
+    	default:
+      		status = 500;
+  	}
+  	ctx.status = status;
+  	ctx.body = err;
+  	console.log(err);
+}
+```
+
+
 
