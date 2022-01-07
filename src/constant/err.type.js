@@ -6,7 +6,7 @@
 module.exports = {
   userFormateError: {
     code: '10001',
-    message: '用户名或密码为空',
+    message: '用户名或密码不能为空',
     result: ''
   },
   userAlreadyExited: {
