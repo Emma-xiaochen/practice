@@ -1155,3 +1155,82 @@ module.exports = (err, ctx) => {
 
 
 
+## 十六、路由自动加载
+
+### 1、新建商品模块
+
+创建`src/router/goods.route.js`文件
+
+### 2、编写goods.route.js
+
+```
+# src/router/goods.route.js
+
+const Router = require('koa-router');
+
+const { upload } = require('../controller/goods.controller');
+
+const router = new Router({ prefix: '/goods' });
+
+router.post('/upload', upload);
+
+module.exports = router;
+```
+
+### 3、编写controller
+
+```js
+# controller/goods.controller.js
+
+class GoodsController {
+	async upload(ctx, next) {
+		ctx.body = '商品图片上传成功'
+	}
+}
+
+module.exports = new GoodsController()
+```
+
+### 4、路由自动加载
+
+- 定义一个fs，导入node里面有一个核心模块
+- 核心模块里有一个方法叫`readdirSync`，然后用同步的这种方式；然后传一个当前目录`__dirname`，会返回一个数组，然后去遍历这个数组
+- 判断排除掉`index.js`自身这个文件，剩下的一次去跟file做一个拼接，依次加载每一个文件
+
+```js
+# src/router/index.js
+
+const fs = require('fs');
+
+const Router = require('koa-router');
+
+const router = new Router();
+
+fs.readdirSync(__dirname).forEach(file => {
+	if(file !== 'index.js') {
+		let r = reuqire('./' + file);
+        router.use(r.routes());
+	}
+})
+
+module.exports = router;
+```
+
+### 5、改写app/index.js
+
+让它自动加载router下的所有路由
+
+```js
+# src/app/index.js
+
+const router = require('../router');
+
+app.use(router.router.routes());
+```
+
+
+
+
+
+
+
