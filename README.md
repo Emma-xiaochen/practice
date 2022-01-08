@@ -1230,6 +1230,83 @@ app.use(router.router.routes());
 
 
 
+## 十七、封装管理员权限
+
+### 1、调用中间件&判断是否有管理员权限
+
+用户得先登录才可以让用户上传图片，所以可以调用之前封装好的中间件`auth`
+
+```js
+# src/router/goods.route.js
+
+const { auth } from require('../middleware/auth.middleware');
+
+router.post('/upload', auth, upload);
+```
+
+定义`判断用户是否有管理员权限`的方法
+
+```js
+# src/middleware/auth.middleware.js
+
+const hasAdminPermission = async(ctx, next) {
+	const {is_admin} = ctx.state.user;
+    
+    // 如果没有权限，就会提示错误
+    // 返回提交一个错误hasNotAdminPermission
+    if(!is_admin) {
+        console.error('该用户没有管理员权限', ctx.state.user);
+        return ctx.app.emit('error', hasNotAdminPermission, ctx);
+    }
+    // 有权限就放行
+    await next();
+    
+}
+```
+
+### 2、定义错误类型
+
+定义`hasNotAdminPermission`
+
+```js
+# src/constant/err.type.js
+
+module.exports = {
+	hasNotAdminPermission: {
+        code: '10103',
+        message: '没有管理员权限',
+        result: ''
+    }
+}
+```
+
+### 3、导入错误类型并导出中间件方法
+
+```js
+# src/middleware/auth.middleware.js
+
+const {
+  	tokenExpiredError,
+  	invalidToken,
+    hasNotAdminPermission
+} = require('../constant/err.type');
+
+module.exports = {
+  	auth,
+    hasAdminPermission
+}
+```
+
+### 4、导入中间件，判断是否有管理员权限
+
+```js
+# src/router/goods.route.js
+
+const { auth, hasAdminPermission } from require('../middleware/auth.middleware');
+
+router.post('/upload', auth, hasAdminPermission, upload);
+```
+
 
 
 
