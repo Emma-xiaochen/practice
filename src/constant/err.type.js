@@ -4,6 +4,7 @@
  */
 
 module.exports = {
+  // 用户模块相关
   userFormateError: {
     code: '10001',
     message: '用户名或密码不能为空',
@@ -34,6 +35,7 @@ module.exports = {
     message: '密码不匹配',
     result: ''
   },
+  // 权限模块相关
   tokenExpiredError: {
     code: '10101',
     message: 'token已过期',
@@ -47,6 +49,12 @@ module.exports = {
   hasNotAdminPermission: {
     code: '10103',
     message: '没有管理员权限',
+    result: ''
+  },
+  // 商品模块相关
+  fileUploadError: {
+    code: '10201',
+    message: '商品图片上传失败',
     result: ''
   }
 }
