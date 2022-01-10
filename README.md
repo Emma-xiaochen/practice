@@ -1309,5 +1309,103 @@ router.post('/upload', auth, hasAdminPermission, upload);
 
 
 
+## 十八、商品图片上传
+
+### 1、新建upload文件夹
+
+专门用来存放上传的图片
+
+### 2、配置koa-body
+
+path有个join这个方法，添加`__dirname`就可以找到当前文件所在的绝对路径,通过它的上一层是绝对可以找到upload的
+
+```js
+# src/app/index.js
+
+const path = require('path');
+
+console.log(process.cwd());
+app.use(KoaBody({
+    multipart: true,
+    formidable: {
+        // 在配置选项option里，不推荐使用相对路径,推荐使用绝对路径
+        // 在option里的相对路径，不是
+        uploadDir: path.join(__dirname, '../upload'),
+        keepExtensions: true
+    }
+}));
+```
+
+### 3、将文件名返回给调用者
+
+①path模块里面有`basename`的方法，它可以拿到最终的文件的文件名
+
+②导入错误类型`fileUploadError`方法
+
+```js
+# src/controller/goods.controller.js
+
+const path = require('path');
+
+const { fileUploadError } from '../constant/err.type'
+
+class GoodsController {
+  async upload(ctx, next) {
+    const { file } = ctx.request.files;
+      // 如果文件有上传，就返回对应的数据
+      if(file) {
+          ctx.body = {
+              code: 0,
+              message: '商品图片上传成功',
+              result: {
+                  goods_img: path.basename(file.path)
+              }
+          }
+      } else {
+          // 如果图片没有上传，就代表文件上传出错了，就抛出错误
+          return ctx.app.emit('error', fileUploadError, ctx);
+      }
+  }
+}
+
+module.exports = new GoodsController();
+```
+
+### 4、定义错误类型`fileUploadError`
+
+```js
+# src/constant/err.type.js
+
+module.exports = {
+  // 商品模块相关
+  fileUploadError: {
+    code: '10201',
+    message: '商品图片上传失败',
+    result: ''
+  }
+}
+```
+
+### 5、安装koa-static
+
+要通过`localhost:8000/xxxx.jpg`访问图片，得安装koa-static
+
+作用就是把某一个目录设置为静态资源文件夹，当请求这个文件的时候，就会去对应的文件夹里面找
+
+```shell
+npm install koa-static
+```
+
+### 6、使用koa-static
+
+```js
+# src/app/index.js
+
+const KoaStatic = require('koa-static');
+
+// 要传一个路径，就是要把哪一个路径作为我们静态资源的路径
+app.use(KoaStatic(path.join(__dirname, '../upload')));
+```
+
 
 
