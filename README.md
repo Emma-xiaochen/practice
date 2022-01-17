@@ -1407,5 +1407,35 @@ const KoaStatic = require('koa-static');
 app.use(KoaStatic(path.join(__dirname, '../upload')));
 ```
 
+### 7、测试商品图片上传接口
+
+#### ①新建一个`/text/file_text.html`文件
+
+```html
+# text/file_text.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <form 
+      action="http://localhost:8000/goods/upload" 
+      method="post" 
+      enctype="multipart/form-data">
+        <input type="file" name="file" />
+        <input type="submit" value="上传" />
+  </form>
+</body>
+</html>
+```
 
 
+
+## 十九、商品图片上传优化（类型判断）
+
+### 1、测试商品接口
