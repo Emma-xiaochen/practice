@@ -8,6 +8,7 @@ const path = require('path');
 const Koa = require('koa');
 const KoaBody = require('koa-body');
 const KoaStatic = require('koa-static');
+const parameter = require('koa-parameter');
 
 const errHandler = require('./errHandler')
 const router = require('../router');
@@ -27,8 +28,9 @@ app.use(
   })
 );
 app.use(KoaStatic(path.join(__dirname, '../upload')));
+app.use(parameter(app));
 
-app.use(router.routes());
+app.use(router.routes()).use(router.allowedMethods())
 
 // 统一的错误处理
 app.on('error', errHandler);
