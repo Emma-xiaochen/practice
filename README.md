@@ -1409,7 +1409,7 @@ app.use(KoaStatic(path.join(__dirname, '../upload')));
 
 ### 7、测试商品图片上传接口
 
-#### ①新建一个`/text/file_text.html`文件
+#### ① 新建一个`/text/file_text.html`文件
 
 ```html
 # text/file_text.html
@@ -1434,8 +1434,174 @@ app.use(KoaStatic(path.join(__dirname, '../upload')));
 </html>
 ```
 
+#### ② 改写router
+
+先让接口不做登录验证和授权
+
+```js
+# src/router/goods.route.js
+
+// router.post('/upload', auth, hadAdminPermission, upload);
+router.post('/upload', upload);
+```
+
+#### ③ 改写controller
+
+```js
+# src/middleware/auth.middleware.js
+
+const auth = async (ctx, next) => {
+  const { authorization = '' } = ctx.request.header;
+  const token = authorization.replace('Bearer ', '');
+  // console.log(token);
+
+  try {
+    // user中包含了payload的信息(id, user_name, is_admin)
+    const user = jwt.verify(token, JWT_SECRET);
+    ctx.state.user = user;
+  } catch (err) {
+    switch (err.name) {
+      case 'TokenExpiredError':
+        console.error('token已过期', err);
+        return ctx.app.emit('error', tokenExpiredError, ctx);
+      case 'JsonWebTokenError':
+        console.error('无效的token', err);
+        return ctx.app.emit('error', invalidToken, ctx)
+    }
+  }
+
+  await next();
+}
+```
+
+#### ④ 打开html上传图片测试
+
+### 8、商品图片上传优化（类型判断）
+
+#### ① 改写controller
+
+```js
+# src/controller/goods.controller.js
+
+const path = require('path');
+
+const { fileUploadError, unSupportedFileType } = require('../constant/err.type');
+
+class GoodsController {
+  async upload(ctx, next) {
+    const { file } = ctx.request.files;
+    const fileTypes = ['image/jpeg', 'image/png'];
+    if (file) {
+      if (!fileTypes.includes(file.type)) {
+        return ctx.app.emit('error', unSupportedFileType, ctx);
+      }
+      ctx.body = {
+        code: 0,
+        message: "商品图片上传成功",
+        result: {
+          goods_img: path.basename(file.path)
+        }
+      }
+    } else {
+      return ctx.app.emit('error', fileUploadError, ctx);
+    }
+  }
+}
+
+module.exports = new GoodsController();
+```
+
+#### ②定义错误类型`unSupportedFileType`
+
+```js
+# src/constant/err.type.js
+
+module.exports = {
+  unSupportedFileType: {
+    code: '10202',
+    message: '不支持该文件格式',
+    result: ''
+  }
+}
+```
 
 
-## 十九、商品图片上传优化（类型判断）
 
-### 1、测试商品接口
+## 十九、集成同意的参数格式校验
+
+### 1、编写发布商品的接口
+
+```js
+# src/router/goods.route.js
+
+const Router = require('koa-router');
+
+const { auth, hadAdminPermission } = require('../middleware/auth.middleware');
+const { validator } = require('../middleware/goods.middleware');
+
+const { upload } = require('../controller/goods.controller');
+
+const router = new Router({ prefix: '/goods' });
+
+// 商品图片上传接口
+router.post('/upload', auth, hadAdminPermission, upload);
+
+// 发布商品接口
+router.post('/', auth, hadAdminPermission, validator);
+
+module.exports = router;
+```
+
+### 2、编写validator中间件
+
+```js
+# src/middleware/goods.middleware.js
+
+const validator = async (ctx, next) => {
+  
+}
+
+module.exports = {
+	validator
+}
+```
+
+### 3、安装koa-parameter
+
+```shell
+npm install koa-paramter
+```
+
+### 4、导入并使用koa-parameter
+
+```js
+# src/app/index.js
+
+const parameter = require('koa-parameter');
+
+app.use(parameter(app));
+```
+
+### 5、编写验证
+
+```js
+# src/middleware/goods.middleware.js
+
+const validator = async (ctx, next) => {
+	try {
+		ctx.verifyParams({
+			goods_name: { type: 'string', required: true },
+			goods_price: { type: 'number', required: true },
+			goods_num: { type: 'number', required: true },
+			goods_img: { type: 'string', required: true }
+		})
+	} catch(err) {
+		console.err(err);
+	}
+}
+
+module.exports = {
+	validator
+}
+```
+
