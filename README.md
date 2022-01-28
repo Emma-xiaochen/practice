@@ -1,6 +1,6 @@
 ## 一、项目的初始化
 
-### 1、npm初始化
+### 1、`npm`初始化
 
 ```shell
 npm init -y
@@ -10,7 +10,7 @@ npm init -y
 
 - 记录项目的依赖
 
-### 2、git初始化
+### 2、`git`初始化
 
 ```shell
 git init
@@ -18,19 +18,19 @@ git init
 
 生成`.git`隐藏文件夹，git的本地仓库
 
-### 3、创建README文件
+### 3、创建`README`文件
 
 
 
 ## 二、搭建项目
 
-### 1、安装koa框架
+### 1、安装`koa`框架
 
 ```
 npm install koa
 ```
 
-### 2、 编写最基础的app
+### 2、 编写最基础的`app`
 
 创建`src/main.js`
 
@@ -139,7 +139,7 @@ app.listen(APP_PORT, () => {
 
 路由：根据不同的URL，调用对应处理函数
 
-### 1、安装koa-router
+### 1、安装`koa-router`
 
 ```shell
 npm install koa-router
@@ -171,7 +171,7 @@ router.get('/', (ctx, next) => {
 module.exports = router;
 ```
 
-### 3、改写main.js
+### 3、改写`main.js`
 
 ```js
 # src/main.js
@@ -195,7 +195,7 @@ app.listen(APP_PORT, () => {
 
 ## 五、目录结构优化
 
-### 1、将http服务和app业务拆分
+### 1、将`http`服务和`app`业务拆分
 
 创建`src/app/index.js`
 
@@ -273,9 +273,9 @@ module.exports = new UserController();
 
 
 
-## 六、解析body
+## 六、解析`body`
 
-### 1、安装koa-body
+### 1、安装`koa-body`
 
 ```shell
 npm install koa-body
@@ -324,7 +324,7 @@ class UserController {
 module.exports = new UserController();
 ```
 
-### 4、拆分service层
+### 4、拆分`service`层
 
 service层主要是做数据库处理
 
@@ -354,7 +354,7 @@ ORM：对象关系映射
 - 数据表字段对应对象的属性
 - 数据表的操作对应对象的方法
 
-### 1、安装sequelize
+### 1、安装`sequelize`
 
 ```shell
 npm install mysql2 sequelize
@@ -407,9 +407,9 @@ module.exports = seq;
 
 
 
-## 八、创建User模型
+## 八、创建`User`模型
 
-### 1、拆分Model层
+### 1、拆分`Model`层
 
 sequelize 主要通过 Model 对应数据表
 
@@ -720,7 +720,7 @@ app.on('error', errHandler);
 
 123123abc（加盐）加盐加密
 
-### 1、安装 bcryptjs
+### 1、安装 `bcryptjs`
 
 ```shell
 npm install bcryptjs
@@ -746,7 +746,7 @@ const cryptPassword = async(ctx, next) => {
 }
 ```
 
-### 3、在router中使用
+### 3、在`router`中使用
 
 改写user.router.js
 
@@ -944,9 +944,9 @@ jwt：json web token
 - payload：载荷
 - signature：签名
 
-### 1、颁发 token
+### 1、颁发 `token`
 
-#### 1) 安装 jsonwebtoken
+#### 1) 安装 `jsonwebtoken`
 
 ```shell
 npm install jsonwebtoken	
@@ -991,7 +991,7 @@ JWT_SECRET = xzd;
 
 ### 2、用户认证
 
-#### 1) 创建auth中间件
+#### 1) 创建`auth`中间件
 
 ```js
 # src/middleware/auth.middleware.js
@@ -1030,7 +1030,7 @@ module.exports = {
 }
 ```
 
-#### 2) 改写router
+#### 2) 改写`router`
 
 ```
 // 修改密码接口
@@ -1046,9 +1046,9 @@ rouer.patch('/', auth, (ctx,next) => {
 
 ### 1、拆分中间件
 
-#### 1) 定义changePassword中间件
+#### 1) 定义`changePassword`中间件
 
-#### 2) 调用service层里updateById
+#### 2) 调用`service`层里`updateById`
 
 ```js
 # src/controller/user.controller.js
@@ -1110,7 +1110,7 @@ module.exports = {
   module.exports = new UserService();
   ```
 
-### 3、改写router
+### 3、改写`router`
 
 ```js
 # src/router/user.route.js
@@ -1161,7 +1161,7 @@ module.exports = (err, ctx) => {
 
 创建`src/router/goods.route.js`文件
 
-### 2、编写goods.route.js
+### 2、编写`goods.route.js`
 
 ```
 # src/router/goods.route.js
@@ -1177,7 +1177,7 @@ router.post('/upload', upload);
 module.exports = router;
 ```
 
-### 3、编写controller
+### 3、编写`controller`
 
 ```js
 # controller/goods.controller.js
@@ -1216,7 +1216,7 @@ fs.readdirSync(__dirname).forEach(file => {
 module.exports = router;
 ```
 
-### 5、改写app/index.js
+### 5、改写`app/index.js`
 
 让它自动加载router下的所有路由
 
@@ -1311,11 +1311,11 @@ router.post('/upload', auth, hasAdminPermission, upload);
 
 ## 十八、商品图片上传
 
-### 1、新建upload文件夹
+### 1、新建`upload`文件夹
 
 专门用来存放上传的图片
 
-### 2、配置koa-body
+### 2、配置`koa-body`
 
 path有个join这个方法，添加`__dirname`就可以找到当前文件所在的绝对路径,通过它的上一层是绝对可以找到upload的
 
@@ -1386,7 +1386,7 @@ module.exports = {
 }
 ```
 
-### 5、安装koa-static
+### 5、安装`koa-static`
 
 要通过`localhost:8000/xxxx.jpg`访问图片，得安装koa-static
 
@@ -1396,7 +1396,7 @@ module.exports = {
 npm install koa-static
 ```
 
-### 6、使用koa-static
+### 6、使用`koa-static`
 
 ```js
 # src/app/index.js
@@ -1434,7 +1434,7 @@ app.use(KoaStatic(path.join(__dirname, '../upload')));
 </html>
 ```
 
-#### ② 改写router
+#### ② 改写`router`
 
 先让接口不做登录验证和授权
 
@@ -1445,7 +1445,7 @@ app.use(KoaStatic(path.join(__dirname, '../upload')));
 router.post('/upload', upload);
 ```
 
-#### ③ 改写controller
+#### ③ 改写`controller`
 
 ```js
 # src/middleware/auth.middleware.js
@@ -1474,11 +1474,11 @@ const auth = async (ctx, next) => {
 }
 ```
 
-#### ④ 打开html上传图片测试
+#### ④ 打开`html`上传图片测试
 
 ### 8、商品图片上传优化（类型判断）
 
-#### ① 改写controller
+#### ① 改写`controller`
 
 ```js
 # src/controller/goods.controller.js
@@ -1527,7 +1527,7 @@ module.exports = {
 
 
 
-## 十九、集成同意的参数格式校验
+## 十九、集成统一的参数格式校验
 
 ### 1、编写发布商品的接口
 
@@ -1552,7 +1552,7 @@ router.post('/', auth, hadAdminPermission, validator);
 module.exports = router;
 ```
 
-### 2、编写validator中间件
+### 2、编写`validator`中间件
 
 ```js
 # src/middleware/goods.middleware.js
@@ -1566,13 +1566,13 @@ module.exports = {
 }
 ```
 
-### 3、安装koa-parameter
+### 3、安装`koa-parameter`
 
 ```shell
 npm install koa-paramter
 ```
 
-### 4、导入并使用koa-parameter
+### 4、导入并使用`koa-parameter`
 
 ```js
 # src/app/index.js
@@ -1604,4 +1604,142 @@ module.exports = {
 	validator
 }
 ```
+
+
+
+## 二十、发布商品写入数据库
+
+### 1、编写中间件
+
+并导入错误类型
+
+导入`createGoods`方法
+
+```js
+# controller/goods.controller.js
+
+const { publishGoodsError } = require('../constant/err.type');
+
+const { createGoods } = require('../service/goods.service.js');
+
+class GoodsController {
+	async create(ctx) {
+		// 直接调用service的createGoods方法
+		try {
+			const { createdAt, updatedAt, ...res } = await createGoods(
+        	ctx.request.body
+      	);
+            ctx.body = {
+                code: 0,
+                message: '发布商品成功',
+                result: res
+            }
+        }  catch(err) {
+            console.error(err);
+            return ctx.app.emit('error', publishGoodsError, ctx);
+        }
+	}
+}
+
+module.exports = new GoodsController();
+```
+
+### 2、改写`goods.route`
+
+导入create方法并调用
+
+```js
+# router/goods.route.js
+
+const { upload, create } = require('../controller/goods.controller');
+
+router.post('/', auth, hadAdminPermission, validator, create);
+```
+
+### 3、定义错误类型`publishGoodsError`
+
+```js
+# constant/err.type.js
+
+module.exports = {
+	// 商品模块相关
+	publishGoodsError: {
+		code: '10204',
+		message: '发布商品失败',
+		result: ''
+	}
+}
+```
+
+
+
+### 4、创建商品模块的service文件并编写
+
+```js
+# src/service/goods.service.js
+
+class GoodsService {
+	async createGoods(goods) {
+		console.log('发布成功');
+		return {
+			goods_name: '蓝牙音箱'
+		}
+	}
+}
+
+module.exports = new GoodsService();
+```
+
+### 5、新建`goods`模型并编写
+
+创建表`DataTypes`
+
+seq数据库连接
+
+定义模型，表名字`zd_goods`，有`goods_name`,`goods_price`,`goods_num`,`goods_img`这些参数
+
+```js
+# model/goods.model.js
+
+const { DataTypes } = require('sequelize');
+
+const seq = require('../db/seq');
+
+const Goods = seq.define('zd_goods', {
+    goods_name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        comment: '商品名称'
+    },
+    goods_price: {
+        type: DataTypes.DECIMAL(10, 2),
+        allowNull: false,
+        comment: '商品价格',
+    },
+    goods_num: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        comment: '商品库存',
+    },
+     goods_img: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        comment: '商品图片的url',
+    },
+})
+
+Goods.sync({ force: true });
+
+module.exports = Goods;
+```
+
+然后执行这个文件
+
+```shell
+node src/model/goods.model.js
+```
+
+创建完把`Goods.sync({ force: true });`注释掉
+
+
 
