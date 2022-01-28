@@ -1743,3 +1743,83 @@ node src/model/goods.model.js
 
 
 
+## 二十一、修改商品接口
+
+### 1、编写路由
+
+导入update方法
+
+```js
+# src/router/goods.route.js
+
+const { update } = require('../controller/goods.controller')
+
+// 修改商品接口
+route.put('/:id', auth, hadAdminPermission, validator, update);
+```
+
+### 2、编写update方法
+
+导入`invalidGoodsID`错误类型
+
+导入`updateGoods`方法
+
+```js
+# src/controller/goods.controlle.js
+
+const { invalidGoodsID } = require('../constant/err.type');
+
+class GoodsController {
+	async update(ctx) {
+        try {
+        	const res = await updateGoods(ctx.params.id, ctx.request.body);
+            
+            if(res) {
+                ctx.body = {
+                    code: 0,
+                    message: '修改商品成功',
+                    result: ''
+                }
+            } else {
+                return ctx.app.emit('error', invalidGoodsID, ctx);
+            }
+        } catch(err) {
+        	console.error(err);
+        }
+    }
+}
+
+module.exports = new GoodsController();
+```
+
+### 3、定义`invalidGoodsID`错误类型
+
+```js
+# src/constant/err.type.js
+
+module.exports = {
+	// 商品模块相关
+	invalidGoodsID: {
+		code: '10205',
+		message: '待修改的商品不存在',
+		result: ''
+	}
+}
+```
+
+### 4、定义`updateGoods`方法
+
+```js
+# src/controller/goods.controller.js
+
+const { updateGoods } = require('../service/goods.service');
+
+class GoodsController {
+	async update(ctx) {
+        await updateGoods(ctx.params.id, ctx.request.body);
+    }
+}
+
+module.exports = new GoodsController();
+```
+
