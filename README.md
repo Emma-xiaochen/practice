@@ -1823,3 +1823,57 @@ class GoodsController {
 module.exports = new GoodsController();
 ```
 
+### 二十二、硬删除接口
+
+### 1、编写router
+
+- 引入中间件里`remove`方法
+
+```js
+# src/router/goods.route.js
+
+const { remove } = require('../controller/goods.controller.js');
+
+// 硬删除接口
+router.delete('/:id', auth, hadAdminPermission, remove);
+```
+
+### 2、编写中间件`remove`方法
+
+- 导入servcie里的removeGoods方法
+
+```js
+#  src/controller/goods.controller.js
+
+const { removeGoods } = require('../service/goods.service.js');
+
+class GoodsController {
+	async remove(ctx) {
+		await removeGoods(ctx.parmas.id)
+      
+		ctx.body = {
+			code: 0,
+          	message: '删除商品成功',
+          	result: ''
+      	}
+  	}
+}
+
+module.exports = new GoodsController();
+```
+
+### 3、在service里实现`removeGoods`方法
+
+```js
+# src/service/goods.service.js
+
+class GoodsService {
+	const res = await removeGoods(id) {
+        Goods.destroy({ where: { id } });
+        return res[0] > 0 ? true : false;
+    }
+}
+
+module.exports = new GoodsService();
+```
+
