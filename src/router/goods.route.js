@@ -4,7 +4,7 @@ const { auth, hadAdminPermission } = require('../middleware/auth.middleware');
 const { validator } = require('../middleware/goods.middleware');
 
 
-const { upload, create, update } = require('../controller/goods.controller');
+const { upload, create, update, remove } = require('../controller/goods.controller');
 
 const router = new Router({ prefix: '/goods' });
 
@@ -16,5 +16,8 @@ router.post('/', auth, hadAdminPermission, validator, create);
 
 // 修改商品接口
 router.put('/:id', auth, hadAdminPermission, validator, update);
+
+// 删除商品接口
+router.delete('/:id', auth, hadAdminPermission, remove);
 
 module.exports = router;
